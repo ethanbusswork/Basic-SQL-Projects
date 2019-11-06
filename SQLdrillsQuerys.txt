@@ -1,0 +1,106 @@
+/* Select all from habitat table */
+
+USE db_zoo;
+
+SELECT * FROM tbl_habitat;
+
+
+/* Select all names from species name column that have a species order of 3 */
+
+USE db_zoo;
+
+SELECT species_name, species_order FROM tbl_species WHERE species_order = 3;
+
+
+/* Retrieve nutrition type from nutrition table that have a cost of 600 or less */
+
+USE db_zoo;
+
+SELECT nutrition_type, nutrition_cost FROM tbl_nutrition WHERE nutrition_cost <= 600;
+
+
+/* Select all species names with the nutrition id between 2202 and 2206 */
+
+USE db_zoo;
+
+SELECT * FROM tbl_species;
+SELECT * FROM tbl_nutrition;
+
+SELECT tbl_species.species_name, tbl_nutrition.nutrition_id
+FROM tbl_species
+INNER JOIN tbl_nutrition ON tbl_species.species_nutrition = tbl_nutrition.nutrition_id
+WHERE tbl_nutrition.nutrition_id BETWEEN 2202 AND 2206;
+
+
+/* Retrieve all species names using the alias "Species Name:" from the species table and corresponding nutrition type under the alias "Nutrition Type:" */
+
+USE db_zoo;
+
+SELECT * FROM tbl_species;
+SELECT * FROM tbl_nutrition;
+
+SELECT tbl_species.species_name AS 'Species Name:', tbl_nutrition.nutrition_type AS 'Nutrition Type:'
+FROM tbl_species
+JOIN tbl_nutrition ON tbl_species.species_nutrition = tbl_nutrition.nutrition_id;
+
+
+/* Select the first and last name and contact number for those that provide care for the penguins */
+
+USE db_zoo;
+
+SELECT * FROM tbl_specialist;
+SELECT * FROM tbl_care;
+SELECT * FROM tbl_species;
+
+SELECT tbl_specialist.specialist_fname, tbl_specialist.specialist_lname, tbl_specialist.specialist_contact
+FROM tbl_care
+INNER JOIN tbl_specialist
+ON care_specialist = specialist_id
+INNER JOIN tbl_species
+ON species_care = care_id
+WHERE species_name = 'penguin';
+
+
+/* Create db with two tables */
+
+USE db_drillsAssignment;
+go
+DROP TABLE tbl_contact
+DROP TABLE tbl_persons
+go
+CREATE TABLE tbl_persons (
+	PersonID int,
+    LastName varchar(255),
+    FirstName varchar(255),
+	PRIMARY KEY (PersonID)
+);
+go
+
+SELECT * FROM tbl_persons;
+
+INSERT INTO tbl_persons
+VALUES (1,'Smith','John')
+;
+
+
+
+CREATE TABLE tbl_contact (
+	PhoneNumber varchar(255),
+	Email varchar(255),
+	PersonID int FOREIGN KEY REFERENCES tbl_persons(PersonID)
+);
+go
+INSERT INTO tbl_contact
+VALUES ('503-123-4567', 'JohnSmith@gmail.com', 1)
+;
+
+
+SELECT * FROM tbl_persons
+SELECT * FROM tbl_contact
+
+SELECT
+	LastName, FirstName, PhoneNumber, Email
+FROM
+	tbl_persons
+INNER JOIN tbl_contact 
+ON tbl_persons.PersonID = tbl_contact.PersonID;

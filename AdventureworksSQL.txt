@@ -1,0 +1,18 @@
+USE AdventureWorks2014;
+
+GO
+CREATE PROCEDURE dbo.uspGetAddress @City nvarchar(30), @AddressLine1 nvarchar(60)
+AS
+SELECT *
+FROM Person.Address
+INNER JOIN Person.BusinessEntityAddress ON Person.Address.AddressID=Person.BusinessEntityAddress.AddressID
+INNER JOIN Person.AddressType ON Person.AddressType.AddressTypeID=Person.BusinessEntityAddress.AddressTypeID
+WHERE City = ISNULL(@City,City)
+AND AddressLine1 LIKE '%' + ISNULL(@AddressLine1,AddressLine1) + '%'
+GO
+
+DROP PROCEDURE dbo.uspGetAddress
+
+
+USE AdventureWorks2014
+EXEC dbo.uspGetAddress @City = 'Calgary', @AddressLine1 = 'A'
